@@ -8,18 +8,18 @@ import {
   SegmentGroup,
 } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
-import { AppEvent, Attendee } from '../../../app/types/event';
+import { AppEvent } from '../../../app/types/event';
+import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../../app/store/store';
+import { deleteEvent } from '../eventSlice';
 
 type Props = {
   event: AppEvent
-  selectEvent: (event : AppEvent) => void;
-  deleteEvent: (eventId: string) => void;
 }
-type AttendeeProps = {
-  attendee: Attendee
-};
 
-export default function EventListItem({ event, selectEvent, deleteEvent }: Props) {
+
+export default function EventListItem({ event}: Props) {
+  const dispatch = useAppDispatch();
   return (
     <SegmentGroup>
       <Segment>
@@ -41,7 +41,7 @@ export default function EventListItem({ event, selectEvent, deleteEvent }: Props
       </Segment>
       <Segment secondary>
         <List horizontal>
-          {event.attendees.map((attendee) => (
+          {event.attendees.map((attendee : any) => (
             <EventListAttendee key={attendee.id} attendee={attendee} />
           ))}
         </List>
@@ -52,13 +52,14 @@ export default function EventListItem({ event, selectEvent, deleteEvent }: Props
          color='orange' 
          floated='right'
           content='Delete' 
-          onClick={() => deleteEvent(event.id)}
+          onClick={() => dispatch(deleteEvent(event.id))}
           />
         <Button
+        as={Link}
+        to={`/events/${event.id}`}
          color='yellow' 
          floated='right'
           content='View' 
-          onClick={() => selectEvent(event)}
           />
       </Segment>
     </SegmentGroup>
